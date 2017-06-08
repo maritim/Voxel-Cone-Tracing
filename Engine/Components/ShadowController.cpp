@@ -15,7 +15,7 @@
 
 void ShadowController::Start ()
 {
-	_directionalLight = LightsManager::Instance ()->GetDirectionalLight (0);
+
 }
 
 void ShadowController::Update ()
@@ -25,8 +25,6 @@ void ShadowController::Update ()
 	}
 
 	glm::ivec2 mousePosition = Input::GetMousePosition ();
-
-	Transform* lightTransform = _directionalLight->GetTransform ();
 
 	std::size_t windowWidth = Window::GetWidth ();
 	std::size_t windowHeight = Window::GetHeight ();
@@ -41,5 +39,14 @@ void ShadowController::Update ()
 	lightDirection.x = normalizedMousePos.x;
 	lightDirection.z = normalizedMousePos.y;
 
-	lightTransform->SetPosition (lightDirection);
+	/*
+	 * Replace positions for all directional lights
+	*/
+
+	for (std::size_t index = 0; index < LightsManager::Instance ()->GetDirectionalLightsCount (); index++) {
+		DirectionalLight* directionalLight = LightsManager::Instance ()->GetDirectionalLight (index);
+		Transform* lightTransform = directionalLight->GetTransform ();
+
+		lightTransform->SetPosition (lightDirection);
+	}
 }
