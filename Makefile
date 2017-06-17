@@ -7,7 +7,7 @@
 ###################################################
 
 # Project Name (executable)
-PROJECT = GameEngine.out
+PROJECT = Demo.out
 # Compiler
 CC = g++
 
