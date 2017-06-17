@@ -1,18 +1,18 @@
-LiteEngine
+Voxel Cone Tracing
 ==========
 
-Lite 3D Game Engine
+A real-time global illumination implementation using voxel cone tracing based on <a href="https://github.com/maritim/LiteEngine" >Lite Engine</a>. 
 
-<img src="https://github.com/maritim/LiteEngine/blob/gh-pages/LiteEngine%20Screenshot%201.png" alt="Particles" width="720px"/>
-<img src="https://github.com/maritim/LiteEngine/blob/gh-pages/LiteEngine%20Screenshot%202.png" alt="Animations" width="720px"/>
+<img src="https://raw.githubusercontent.com/maritim/Voxel-Cone-Tracing/gh-pages/vct-result1.png" width="720px"/>
+<img src="https://raw.githubusercontent.com/maritim/Voxel-Cone-Tracing/gh-pages/vct-result2.png" width="720px"/>
 
 Project Health
 =================
 
 | Service | System | Compiler | Status |
 | ------- | ------ | -------- | ------ |
-| [Travis CI](https://travis-ci.org/maritim/LiteEngine)| Linux 64 bits  | GCC 4.8.4 | [![Travis CI](https://travis-ci.org/maritim/LiteEngine.svg?branch=master)](https://travis-ci.org/maritim/LiteEngine)
-| [AppVeyor](https://ci.appveyor.com/project/maritim/liteengine)| Windows 64 | Visual Studio 2015 | [![AppVeyor](https://ci.appveyor.com/api/projects/status/s0fqli66756555gt/branch/master?svg=true)](https://ci.appveyor.com/project/maritim/liteengine/branch/master)
+| [Travis CI](https://travis-ci.org/maritim/Voxel-Cone-Tracing)| Linux 64 bits  | GCC 4.8.4 | [![Travis CI](https://travis-ci.org/maritim/Voxel-Cone-Tracing.svg?branch=master)](https://travis-ci.org/maritim/Voxel-Cone-Tracing)
+| [AppVeyor](https://ci.appveyor.com/project/maritim/voxel-cone-tracing)| Windows 64 | Visual Studio 2015 | [![AppVeyor](https://ci.appveyor.com/api/projects/status/7w692jvfu0ol6gjy?svg=true)](https://ci.appveyor.com/project/maritim/voxel-cone-tracing)
 
 Debian Install Guide
 =================
@@ -26,11 +26,11 @@ Get the project from GitHub
 
 * Create a local directory for the project
 
-        mkdir LiteEngine && cd LiteEngine
+        mkdir VoxelConeTracing && cd VoxelConeTracing
     
 * Clone the project
 
-        git clone https://github.com/maritim/LiteEngine
+        git clone https://github.com/maritim/Voxel-Cone-Tracing
 
 Install and configure dependecies
 --------------------
@@ -45,8 +45,8 @@ Build
 
 * Compile the project
 
-        make
+        make CONFIG=RELEASE
         
 * Run the application using a prototype scene
 
-        ./GameEngine.out --startscene Assets/Scenes/Prototype.scene 
+        ./Demo.out --startscene Assets/Scenes/Sponza.scene 
