@@ -1,6 +1,0 @@
-#
-
-newmtl red
-Ka 0.2 0.2 0.2
-Kd 1.0 0.0 0.0
-shaders Shaders/cubesVertex.glsl Shaders/cubesFragment.glsl
