@@ -29,7 +29,6 @@ void RenderModulesController::Start ()
 	GeneralSettings::Instance ()->SetIntValue ("VoxelVolumeMipmapLevel", 0);
 	GeneralSettings::Instance ()->SetIntValue ("ContinousVoxelizationPass", 1);
 
-
 	Font* font = Resources::LoadBitmapFont ("Assets/Fonts/Fonts/sans.fnt");
 
 	_textGUI = new TextGUI* [3];

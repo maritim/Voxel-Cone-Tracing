@@ -6,6 +6,8 @@
 
 #include "VoxelVolume.h"
 
+#include "Settings/GeneralSettings.h"
+
 VoxelMipmapRenderPass::~VoxelMipmapRenderPass ()
 {
 
@@ -19,6 +21,10 @@ void VoxelMipmapRenderPass::Init ()
 
 RenderVolumeCollection* VoxelMipmapRenderPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
+		return rvc;
+	}
+
 	/*
 	* Start mipmapping pass
 	*/

@@ -21,6 +21,10 @@ void VoxelBorderRenderPass::Init ()
 
 RenderVolumeCollection* VoxelBorderRenderPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
+		return rvc;
+	}
+
 	/*
 	* Start mipmapping pass
 	*/

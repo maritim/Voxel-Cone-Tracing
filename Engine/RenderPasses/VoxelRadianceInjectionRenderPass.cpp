@@ -4,6 +4,8 @@
 
 #include "Renderer/Pipeline.h"
 
+#include "Settings/GeneralSettings.h"
+
 VoxelRadianceInjectionRenderPass::~VoxelRadianceInjectionRenderPass ()
 {
 
@@ -17,6 +19,10 @@ void VoxelRadianceInjectionRenderPass::Init ()
 
 RenderVolumeCollection* VoxelRadianceInjectionRenderPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
+		return rvc;
+	}
+
 	/*
 	* Start radiance injecting pass
 	*/

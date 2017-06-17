@@ -8,6 +8,8 @@
 
 #include "Wrappers/OpenGL/GL.h"
 
+#include "Settings/GeneralSettings.h"
+
 #include "Core/Console/Console.h"
 
 /*
@@ -47,6 +49,10 @@ void VoxelizationRenderPass::Init ()
 
 RenderVolumeCollection* VoxelizationRenderPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
+		return rvc->Insert ("VoxelVolume", _voxelVolume);
+	}
+
 	/*
 	* Voxelization start
 	*/

@@ -12,6 +12,8 @@
 
 #include "Core/Intersections/Intersection.h"
 
+#include "Settings/GeneralSettings.h"
+
 #include "Core/Console/Console.h"
 
 DirectionalShadowMapRenderPass::DirectionalShadowMapRenderPass () :
@@ -35,6 +37,10 @@ void DirectionalShadowMapRenderPass::Init ()
 
 RenderVolumeCollection* DirectionalShadowMapRenderPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
+		return rvc->Insert ("ShadowMapVolume", _voxelShadowMapVolume);
+	}
+
 	/*
 	* Start shadow map drawing process
 	*/
