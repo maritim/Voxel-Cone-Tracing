@@ -48,7 +48,7 @@ void main()
 			contributionCount += contribution.x; 
 		}
 
-		float alpha = contributionCount > 0 ? 1.0 : 0.0;
+		float alpha = contributionCount == 0.0 ? 0.0 : 1.0 / contributionCount; 
 
 		imageStore(dstImageMip, dstPos, vec4(finalColor / contributionCount, alpha));
 	}
