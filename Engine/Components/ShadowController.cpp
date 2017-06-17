@@ -15,7 +15,9 @@
 
 void ShadowController::Start ()
 {
-
+	for (std::size_t lightIndex = 0; lightIndex < LightsManager::Instance ()->GetDirectionalLightsCount (); lightIndex++) {
+		_directionalLights.push_back (LightsManager::Instance ()->GetDirectionalLight (lightIndex));
+	}
 }
 
 void ShadowController::Update ()
@@ -39,13 +41,8 @@ void ShadowController::Update ()
 	lightDirection.x = normalizedMousePos.x;
 	lightDirection.z = normalizedMousePos.y;
 
-	/*
-	 * Replace positions for all directional lights
-	*/
-
-	for (std::size_t index = 0; index < LightsManager::Instance ()->GetDirectionalLightsCount (); index++) {
-		DirectionalLight* directionalLight = LightsManager::Instance ()->GetDirectionalLight (index);
-		Transform* lightTransform = directionalLight->GetTransform ();
+	for (DirectionalLight* dirLight : _directionalLights) {
+		Transform* lightTransform = dirLight->GetTransform ();
 
 		lightTransform->SetPosition (lightDirection);
 	}

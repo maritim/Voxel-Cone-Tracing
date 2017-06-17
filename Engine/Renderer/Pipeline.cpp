@@ -375,14 +375,14 @@ void Pipeline::SendMaterial(Material* mat, Shader* shader)
 		GL::Uniform1i (shader->GetUniformLocation ("NormalMap"), 0);
 	}
 
-	// if (mat->alphaTexture) {
-	// 	glActiveTexture (GL_TEXTURE0 + _textureCount);
-	// 	GL::BindTexture (GL_TEXTURE_2D, mat->alphaTexture);
-	// 	glUniform1i (shader->GetUniformLocation ("AlphaMap"), _textureCount);
-	// 	++ _textureCount;
-	// } else {
-	// 	glUniform1i (shader->GetUniformLocation ("AlphaMap"), 0);
-	// }
+	 if (mat->alphaTexture) {
+	 	GL::ActiveTexture (GL_TEXTURE0 + _textureCount);
+	 	GL::BindTexture (GL_TEXTURE_2D, mat->alphaTexture);
+	 	GL::Uniform1i (shader->GetUniformLocation ("AlphaMap"), _textureCount);
+	 	++ _textureCount;
+	 } else {
+	 	GL::Uniform1i (shader->GetUniformLocation ("AlphaMap"), 0);
+	 }
 
 	/*
 	 * Send custom attributes
