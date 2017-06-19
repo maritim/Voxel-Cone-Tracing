@@ -115,6 +115,7 @@ void main()
 		*/
 
 		if (!IsInShadow (voxelWorldPos)) {
+			// imageStore
 			return;
 		}
 
