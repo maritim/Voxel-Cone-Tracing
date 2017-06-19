@@ -23,6 +23,10 @@ RenderVolumeCollection* VoxelRadianceInjectionRenderPass::Execute (Scene* scene,
 		return rvc;
 	}
 
+	if (!GeneralSettings::Instance ()->GetIntValue ("RadianceInjection")) {
+		return rvc;
+	}
+
 	/*
 	* Start radiance injecting pass
 	*/

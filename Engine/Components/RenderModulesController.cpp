@@ -25,7 +25,7 @@ void RenderModulesController::Start ()
 	_shadowsSun->SetActive (false);
 	_giSun->SetActive (false);
 
-	GeneralSettings::Instance ()->SetIntValue ("RadianceInjection", 0);
+	GeneralSettings::Instance ()->SetIntValue ("RadianceInjection", 1);
 	GeneralSettings::Instance ()->SetIntValue ("VoxelVolumeMipmapLevel", 0);
 	GeneralSettings::Instance ()->SetIntValue ("ContinousVoxelizationPass", 1);
 
