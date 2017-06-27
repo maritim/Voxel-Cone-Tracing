@@ -141,15 +141,15 @@ vec3 Orthogonal(vec3 u)
 {
 	u = normalize(u);
 
-	vec3 v = vec3(1.0, 0.0, 0.0);
+	vec3 v = vec3(0.0, 1.0, 0.0);
 
-	return abs(dot(u, v)) > 0.99999f ? cross(u, vec3(0, 1, 0)) : cross(u, v);
+	return abs(dot(u, v)) > 0.99 ? cross(u, vec3(0, 0, 1)) : cross(u, v);
 }
 
 // origin, dir, and maxDist are in texture space
 // dir should be normalized
 // coneRatio is the cone diameter to height ratio (2.0 for 90-degree cone)
-vec3 voxelTraceCone(vec3 origin, vec3 dir, float coneRatio, float maxDist, out float occlusion)
+vec4 voxelTraceCone(vec3 origin, vec3 dir, float coneRatio, float maxDist)
 {
 	vec3 samplePos = origin;
 	vec3 accum = vec3(0.0);
@@ -159,10 +159,7 @@ vec3 voxelTraceCone(vec3 origin, vec3 dir, float coneRatio, float maxDist, out f
 	float minDiameter = minVoxelDiameter;
 
 	// push out the starting point to avoid self-intersection
-	float startDist = minDiameter * 20;
-
-	// occlusion
-	occlusion = 0.0;
+	float startDist = minDiameter * 10;
 	
 	float dist = startDist;
 	while (dist <= maxDist && alpha < 1.0)
@@ -184,16 +181,16 @@ vec3 voxelTraceCone(vec3 origin, vec3 dir, float coneRatio, float maxDist, out f
 		
 		vec4 sampleValue = textureLod (volumeTexture, samplePos, min (sampleLOD, VOXEL_MIPMAP_COUNT - 1.0));
 		
-		accum = alpha * accum + (1.0 - alpha) * sampleValue.a * sampleValue.rgb;
+		accum = accum + (1.0 - alpha) * sampleValue.a * sampleValue.rgb;
 		alpha = alpha + (1.0 - alpha) * sampleValue.a;
 
 		dist += sampleDiameter;
 	}
 	
 	// decompress color range to decode limited HDR
-	accum *= 2.0;
+	// accum *= 2.0;
 	
-	return accum;
+	return vec4 (accum, alpha);
 }
 
 // Calculates indirect diffuse light using voxel cone tracing.
@@ -206,25 +203,17 @@ vec3 CalcIndirectDiffuseLight(vec3 in_position, vec3 in_normal)
 
 	vec3 iblDiffuse = vec3(0.0);
 
-	float iblConeRatio = 2;
+	float iblConeRatio = 1;
 	float iblMaxDist = .3;
 
-	float globalOcclusion = 0.0;
-	float occlusion = 0.0;
-
 	// this sample gets full weight (dot(normal, normal) == 1)
-	iblDiffuse += voxelTraceCone(voxelPos, in_normal, iblConeRatio, iblMaxDist, occlusion).xyz;
-	globalOcclusion += 1.0 - 0.2 * occlusion;
+	iblDiffuse += voxelTraceCone(voxelPos, in_normal, iblConeRatio, iblMaxDist).xyz;
 
 	// these samples get partial weight
-	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal + tangent), iblConeRatio, iblMaxDist, occlusion).xyz;
-	globalOcclusion += 1.0 - 0.2 * occlusion;
-	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal - tangent), iblConeRatio, iblMaxDist, occlusion).xyz;
-	globalOcclusion += 1.0 - 0.2 * occlusion;
-	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal + bitangent), iblConeRatio, iblMaxDist, occlusion).xyz;
-	globalOcclusion += 1.0 - 0.2 * occlusion;
-	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal - bitangent), iblConeRatio, iblMaxDist, occlusion).xyz;
-	globalOcclusion += 1.0 - 0.2 * occlusion;
+	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal + tangent), iblConeRatio, iblMaxDist).xyz;
+	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal - tangent), iblConeRatio, iblMaxDist).xyz;
+	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal + bitangent), iblConeRatio, iblMaxDist).xyz;
+	iblDiffuse += .707 * voxelTraceCone(voxelPos, normalize(in_normal - bitangent), iblConeRatio, iblMaxDist).xyz;
 
 	// Return result.
 	return iblDiffuse;
@@ -240,11 +229,8 @@ vec3 CalcIndirectSpecularLight (vec3 in_position, vec3 in_normal)
 		
 	vec3 reflectTraceOrigin = GetPositionInVolume (in_position);
 	float coneRatio = .2;
-	float maxDist = 1;
-
-	float occlusion = 0.0;
-
-	specularLight = voxelTraceCone (reflectTraceOrigin, reflectionDir, coneRatio, maxDist, occlusion).xyz;
+	float maxDist = .3;
+	specularLight = voxelTraceCone (reflectTraceOrigin, reflectionDir, coneRatio, maxDist).xyz;
 
 	return specularLight;
 }
@@ -263,6 +249,64 @@ vec3 CalcDirectDiffuseLight (vec3 in_position, vec3 in_normal, vec3 in_diffuse)
 	return diffuseColor;
 }
 
+float voxelTraceConeOcclusion(vec3 origin, vec3 dir, float coneRatio, float maxDist)
+{
+	vec3 samplePos = origin;
+	float occlusion = 0.0;
+	float alpha = 0.0;
+
+	// the starting sample diameter
+	float minDiameter = minVoxelDiameter;
+
+	// push out the starting point to avoid self-intersection
+	float startDist = minDiameter * 1.5;
+	
+	float dist = startDist;
+	while (dist <= maxDist && alpha < 1.0)
+	{
+		float sampleDiameter = max(minDiameter, coneRatio * dist);
+		
+		float sampleLOD = log2(sampleDiameter * minVoxelDiameterInv);
+		
+		vec3 samplePos = origin + dir * dist;
+		
+		vec4 sampleValue = textureLod (volumeTexture, samplePos, min (sampleLOD, VOXEL_MIPMAP_COUNT - 1.0));
+
+		occlusion += ((1.0 - alpha) * sampleValue.a) / (1.0 + 0.03 * sampleDiameter);
+
+		alpha = alpha + (1.0 - alpha) * sampleValue.a;
+
+		dist += sampleDiameter;
+	}
+	
+	return occlusion;
+}
+
+float CalcOcclusion (vec3 in_position, vec3 in_normal)
+{
+	vec3 voxelPos = GetPositionInVolume (in_position);
+
+	vec3 tangent = normalize(Orthogonal(in_normal));
+	vec3 bitangent = normalize(cross(in_normal, tangent));
+
+	float occlusion = 0.0;
+
+	float iblConeRatio = 0.2;
+	float iblMaxDist = .04;
+
+	// this sample gets full weight (dot(normal, normal) == 1)
+	occlusion += 1.0 - voxelTraceConeOcclusion(voxelPos, in_normal, iblConeRatio, iblMaxDist);
+
+	// these samples get partial weight
+	occlusion += 0.55 * (1.0 - voxelTraceConeOcclusion(voxelPos, normalize(in_normal + tangent), iblConeRatio, iblMaxDist));
+	occlusion += 0.55 * (1.0 - voxelTraceConeOcclusion(voxelPos, normalize(in_normal - tangent), iblConeRatio, iblMaxDist));
+	occlusion += 0.55 * (1.0 - voxelTraceConeOcclusion(voxelPos, normalize(in_normal + bitangent), iblConeRatio, iblMaxDist));
+	occlusion += 0.55 * (1.0 - voxelTraceConeOcclusion(voxelPos, normalize(in_normal - bitangent), iblConeRatio, iblMaxDist));
+
+	// Return result.
+	return occlusion / 3.2;
+}
+
 vec3 CalcDirectionalLight (vec3 in_position, vec3 in_normal, vec3 in_diffuse, vec3 in_specular, float in_shininess)
 {
 	vec3 directDiffuseColor = CalcDirectDiffuseLight (in_position, in_normal, in_diffuse);
@@ -274,8 +318,12 @@ vec3 CalcDirectionalLight (vec3 in_position, vec3 in_normal, vec3 in_diffuse, ve
 	vec3 indirectDiffuseColor = CalcIndirectDiffuseLight (in_position, in_normal);
 	vec3 indirectSpecularColor = CalcIndirectSpecularLight (in_position, in_normal);
 
+	// float ambientOcclusion = CalcOcclusion (in_position, in_normal);
+
+	// return vec3 (ambientOcclusion);
+	// return indirectSpecularColor;
 	return (directDiffuseColor + indirectDiffuseColor) * in_diffuse
-		   ;//+ (indirectSpecularColor) * in_specular;
+		   + (indirectSpecularColor) * in_specular;
 }
 
 void main()
