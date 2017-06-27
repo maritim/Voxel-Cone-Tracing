@@ -6,17 +6,21 @@
 
 #include "Systems/Camera/Camera.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 std::size_t Window::_width (0);
 std::size_t Window::_height (0);
 std::string Window::_title ("");
+bool Window::_fullscreen (true);
 
 SDL_Window* Window::_window (nullptr);
 SDL_GLContext Window::_glContext;
 
-bool Window::Init (std::size_t width, std::size_t height, std::string title)
+bool Window::Init (std::size_t width, std::size_t height, bool fullscreen, std::string title)
 {
 	_width = width; 
 	_height = height; 
+	_fullscreen = fullscreen;
 	_title = title;
 
 	/*
@@ -25,8 +29,10 @@ bool Window::Init (std::size_t width, std::size_t height, std::string title)
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	
-	_window = SDL_CreateWindow (_title.c_str (), 0, 0, _width, _height, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|SDL_WINDOW_SHOWN);
+
+	unsigned int windowFlags = GetWindowFlags ();
+
+	_window = SDL_CreateWindow (_title.c_str (), 0, 0, _width, _height, windowFlags);
 
 	if (_window == nullptr) {
 		Console::LogError ("Window \"" + title + "\" could not be initialized");
@@ -49,6 +55,8 @@ bool Window::Init (std::size_t width, std::size_t height, std::string title)
 
 void Window::SwapBuffers ()
 {
+	PROFILER_LOGGER("Swap buffers")
+
 	SDL_GL_SwapWindow(_window);
 }
 
@@ -102,4 +110,13 @@ std::size_t Window::GetHeight ()
 std::string Window::GetTitle ()
 {
 	return _title;
+}
+
+unsigned int Window::GetWindowFlags ()
+{
+	unsigned int windowFlags = _fullscreen ? 
+		SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN | SDL_WINDOW_RESIZABLE:
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN;
+		
+	return windowFlags;
 }
