@@ -6,6 +6,8 @@
 
 #include "Settings/GeneralSettings.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 VoxelRadianceInjectionRenderPass::~VoxelRadianceInjectionRenderPass ()
 {
 
@@ -26,6 +28,8 @@ RenderVolumeCollection* VoxelRadianceInjectionRenderPass::Execute (Scene* scene,
 	if (!GeneralSettings::Instance ()->GetIntValue ("RadianceInjection")) {
 		return rvc;
 	}
+
+	PROFILER_LOGGER("VOXEL RADIANCE INJECTION PASS")
 
 	/*
 	* Start radiance injecting pass
@@ -83,7 +87,7 @@ void VoxelRadianceInjectionRenderPass::RadianceInjectPass (RenderVolumeCollectio
 	 * Inject radiance
 	*/
 
-	int numWorkGroups = glm::ceil (512.0f / 4.0f);
+	int numWorkGroups = glm::ceil (256.0f / 4.0f);
 	GL::DispatchCompute (numWorkGroups, numWorkGroups, numWorkGroups);
 }
 

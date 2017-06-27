@@ -8,6 +8,8 @@
 #include "VoxelVolume.h"
 #include "GBuffer.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 VoxelConeTraceLightPass::~VoxelConeTraceLightPass ()
 {
 
@@ -20,6 +22,8 @@ void VoxelConeTraceLightPass::Init ()
 
 RenderVolumeCollection* VoxelConeTraceLightPass::Execute (Scene* scene, Camera* camera, RenderVolumeCollection* rvc)
 {
+	PROFILER_LOGGER("VOXEL CONE TRACING")
+
 	/*
 	 * Voxel cone trace light pass
 	*/

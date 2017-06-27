@@ -8,6 +8,8 @@
 
 #include "Settings/GeneralSettings.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 VoxelBorderRenderPass::~VoxelBorderRenderPass ()
 {
 
@@ -24,6 +26,8 @@ RenderVolumeCollection* VoxelBorderRenderPass::Execute (Scene* scene, Camera* ca
 	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
 		return rvc;
 	}
+
+	PROFILER_LOGGER("VOXEL BORDER PASS")
 
 	/*
 	* Start mipmapping pass
@@ -55,7 +59,7 @@ void VoxelBorderRenderPass::StartVoxelBordering ()
 
 void VoxelBorderRenderPass::BorderVoxelVolume (RenderVolumeCollection* rvc)
 {
-	std::size_t dstMipRes = 512;
+	std::size_t dstMipRes = 256;
 	Shader* computeShader = ShaderManager::Instance ()->GetShader ("VOXEL_BORDER_PASS_COMPUTE_SHADER");
 
 	VoxelVolume* voxelVolume = (VoxelVolume*) rvc->GetRenderVolume ("VoxelVolume");

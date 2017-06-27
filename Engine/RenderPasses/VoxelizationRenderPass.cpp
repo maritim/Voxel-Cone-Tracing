@@ -12,11 +12,13 @@
 
 #include "Core/Console/Console.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 /*
  * TODO: Move this to settings
 */
 
-#define VOLUME_DIMENSTIONS 512
+#define VOLUME_DIMENSTIONS 256
 
 VoxelizationRenderPass::VoxelizationRenderPass () :
 	_voxelVolume (new VoxelVolume ())
@@ -52,6 +54,8 @@ RenderVolumeCollection* VoxelizationRenderPass::Execute (Scene* scene, Camera* c
 	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
 		return rvc->Insert ("VoxelVolume", _voxelVolume);
 	}
+
+	PROFILER_LOGGER("VOXELIZATION PASS")
 
 	/*
 	* Voxelization start

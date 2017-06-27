@@ -16,6 +16,8 @@
 
 #include "Core/Console/Console.h"
 
+#include "Debug/Profiler/Profiler.h"
+
 DirectionalShadowMapRenderPass::DirectionalShadowMapRenderPass () :
 	_voxelShadowMapVolume (new VoxelShadowMapVolume ())
 {
@@ -40,6 +42,8 @@ RenderVolumeCollection* DirectionalShadowMapRenderPass::Execute (Scene* scene, C
 	if (!GeneralSettings::Instance ()->GetIntValue ("ContinousVoxelizationPass")) {
 		return rvc->Insert ("ShadowMapVolume", _voxelShadowMapVolume);
 	}
+
+	PROFILER_LOGGER("SHADOW MAP PASS")
 
 	/*
 	* Start shadow map drawing process
