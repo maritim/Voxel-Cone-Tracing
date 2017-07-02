@@ -138,7 +138,6 @@
     <ClCompile Include="Components\RenderModulesController.cpp" />
     <ClCompile Include="Components\ShadowController.cpp" />
     <ClCompile Include="Components\StatisticsView.cpp" />
-    <ClCompile Include="Components\VoxelTestComponent.cpp" />
     <ClCompile Include="Core\Console\Console.cpp" />
     <ClCompile Include="Core\Interfaces\Object.cpp" />
     <ClCompile Include="Core\Intersections\AABBVolume.cpp" />
@@ -334,7 +333,6 @@
     <ClInclude Include="Components\RenderModulesController.h" />
     <ClInclude Include="Components\ShadowController.h" />
     <ClInclude Include="Components\StatisticsView.h" />
-    <ClInclude Include="Components\VoxelTestComponent.h" />
     <ClInclude Include="Core\Console\Console.h" />
     <ClInclude Include="Core\Interfaces\Object.h" />
     <ClInclude Include="Core\Intersections\AABBVolume.h" />

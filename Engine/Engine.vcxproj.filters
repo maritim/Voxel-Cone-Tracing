@@ -504,9 +504,6 @@
     <ClCompile Include="SceneGraph\SceneIterator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\VoxelTestComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VoxelConeTrace\DirectionalLightVoxelConeTraceRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1542,9 +1539,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SceneGraph\SceneIterator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\VoxelTestComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VoxelConeTrace\DirectionalLightVoxelConeTraceRenderer.h">
